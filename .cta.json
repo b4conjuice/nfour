@@ -1,0 +1,29 @@
+{
+  "projectName": "nfour",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "pnpm",
+  "includeExamples": false,
+  "tailwind": true,
+  "addOnOptions": {
+    "drizzle": {
+      "database": "postgresql"
+    }
+  },
+  "envVarValues": {
+    "VITE_CLERK_PUBLISHABLE_KEY": "pk_test_aHVtb3JvdXMtamF3ZmlzaC00Ny5jbGVyay5hY2NvdW50cy5kZXYk"
+  },
+  "git": false,
+  "install": true,
+  "routerOnly": false,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "eslint",
+    "nitro",
+    "clerk",
+    "drizzle",
+    "tRPC",
+    "tanstack-query"
+  ]
+}
