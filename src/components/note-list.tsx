@@ -1,13 +1,18 @@
-import { Link } from '@tanstack/react-router'
+import { getRouteApi, Link } from '@tanstack/react-router'
 
 import type { Note } from '@/lib/types'
 import useSearch from '@/lib/useSearch'
 
+const routeApi = getRouteApi('/')
+
 export default function NoteList({ notes }: { notes: Note[] }) {
+  const searchParams = routeApi.useSearch()
+  const query = searchParams.q
+  const navigate = routeApi.useNavigate()
+
   const { search, setSearch, results, searchRef } = useSearch({
-    // initialSearch: query ? String(query) : '',
+    initialSearch: query ? String(query) : '',
     // list: taggedNotes || [],
-    initialSearch: '',
     list: notes,
     options: {
       keys: ['title', 'body'],
@@ -25,8 +30,9 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           onChange={e => {
             const { value } = e.target
             setSearch(value)
-            // const url = `${pathname}${value ? `?q=${value}` : ''}`
-            // router.push(url)
+            navigate({
+              search: { q: value },
+            })
           }}
           disabled={!(notes.length && notes.length > 0)}
         />

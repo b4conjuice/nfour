@@ -5,7 +5,14 @@ import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
 import NoteList from '@/components/note-list'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  component: Home,
+  validateSearch: (search: Record<string, string>) => {
+    return {
+      q: search.q ? String(search.q) : undefined,
+    }
+  },
+})
 
 function Home() {
   const trpc = useTRPC()
