@@ -14,7 +14,10 @@ export default function NoteList({ notes }: { notes: Note[] }) {
             }}
             className='text-cb-pink hover:text-cb-pink/75 flex grow items-center justify-between py-4 group-first:pt-0'
           >
-            {note.title}
+            <div>
+              <div>{note.title}</div>
+              {note.tags.length > 0 && <div>{note.tags.join(' ')}</div>}
+            </div>
           </Link>
         </li>
       ))}
