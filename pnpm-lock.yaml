@@ -54,6 +54,12 @@ dependencies:
   '@trpc/tanstack-react-query':
     specifier: ^11.11.0
     version: 11.17.0(@tanstack/react-query@5.100.10)(@trpc/client@11.17.0)(@trpc/server@11.17.0)(react@19.2.6)(typescript@6.0.3)
+  '@uidotdev/usehooks':
+    specifier: ^2.4.1
+    version: 2.4.1(react-dom@19.2.6)(react@19.2.6)
+  classnames:
+    specifier: ^2.5.1
+    version: 2.5.1
   drizzle-kit:
     specifier: ^0.31.9
     version: 0.31.10
@@ -2687,6 +2693,17 @@ packages:
       eslint-visitor-keys: 5.0.1
     dev: true
 
+  /@uidotdev/usehooks@2.4.1(react-dom@19.2.6)(react@19.2.6):
+    resolution: {integrity: sha512-1I+RwWyS+kdv3Mv0Vmc+p0dPYH0DTRAo04HLyXReYBL9AeseDWUJyi4THuksBJcu9F0Pih69Ak150VDnqbVnXg==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+    dev: false
+
   /@unrs/resolver-binding-android-arm-eabi@1.11.1:
     resolution: {integrity: sha512-ppLRUgHVaGRWUx0R0Ut06Mjo9gBaBkg3v/8AxusGLhsIotbBLuRk51rAzqLC8gq6NyyAojEXglNjzf6R948DNw==}
     cpu: [arm]
@@ -3119,6 +3136,10 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: false
+
+  /classnames@2.5.1:
+    resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
     dev: false
 
   /clsx@2.1.1:

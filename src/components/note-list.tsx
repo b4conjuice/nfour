@@ -1,4 +1,7 @@
+import { useRef } from 'react'
 import { getRouteApi, Link } from '@tanstack/react-router'
+import { useLocalStorage } from '@uidotdev/usehooks'
+import classNames from 'classnames'
 
 import type { Note } from '@/lib/types'
 import useSearch from '@/lib/useSearch'
@@ -10,14 +13,35 @@ export default function NoteList({ notes }: { notes: Note[] }) {
   const query = searchParams.q
   const navigate = routeApi.useNavigate()
 
+  const [selectedTags, setSelectedTags] = useLocalStorage<string[]>(
+    'nfour-selected-tags',
+    []
+  )
+  const allTags = [
+    ...new Set(
+      notes.reduce((currentAllTags: string[], note: Note) => {
+        const { tags } = note
+        const noteTags = [...tags]
+        return [...currentAllTags, ...noteTags]
+      }, selectedTags)
+    ),
+  ]
+
+  const taggedNotes = notes.filter(note =>
+    selectedTags.length > 0
+      ? selectedTags.every(tag => note.tags.includes(tag))
+      : true
+  )
+
   const { search, setSearch, results, searchRef } = useSearch({
     initialSearch: query ? String(query) : '',
-    // list: taggedNotes || [],
-    list: notes,
+    list: taggedNotes,
     options: {
       keys: ['title', 'body'],
     },
   })
+
+  const firstTagButtonRef = useRef<HTMLButtonElement | null>(null)
   return (
     <>
       <div className='flex'>
@@ -37,6 +61,37 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           disabled={!(notes.length && notes.length > 0)}
         />
       </div>
+      {allTags.length > 0 && (
+        <ul className='flex space-x-2 overflow-x-auto'>
+          {allTags.map((tag, index) => (
+            <li key={tag}>
+              <button
+                ref={index === 0 ? firstTagButtonRef : undefined}
+                className={classNames(
+                  'bg-cb-blue rounded-lg border p-2',
+                  selectedTags.includes(tag)
+                    ? 'border-cb-pink'
+                    : 'border-cb-blue'
+                )}
+                onClick={() => {
+                  const selectedTagIndex = selectedTags.findIndex(
+                    t => t === tag
+                  )
+                  const newSelectedTags = [...selectedTags]
+                  if (selectedTagIndex > -1) {
+                    newSelectedTags.splice(selectedTagIndex, 1)
+                  } else {
+                    newSelectedTags.push(tag)
+                  }
+                  setSelectedTags(newSelectedTags)
+                }}
+              >
+                {tag}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       <ul className='divide-cb-dusty-blue divide-y'>
         {results.map(note => (
           <li key={note.id} className='group flex gap-2'>
