@@ -60,6 +60,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.45.1
     version: 0.45.2(@types/pg@8.20.0)(pg@8.20.0)
+  fuse.js:
+    specifier: ^7.3.0
+    version: 7.3.0
   lucide-react:
     specifier: ^0.545.0
     version: 0.545.0(react@19.2.6)
@@ -86,6 +89,9 @@ dependencies:
     version: 4.4.3
 
 devDependencies:
+  '@tailwindcss/forms':
+    specifier: ^0.5.11
+    version: 0.5.11(tailwindcss@4.3.0)
   '@tailwindcss/typography':
     specifier: ^0.5.16
     version: 0.5.19(tailwindcss@4.3.0)
@@ -1718,6 +1724,15 @@ packages:
       espree: 10.4.0
       estraverse: 5.3.0
       picomatch: 4.0.4
+    dev: true
+
+  /@tailwindcss/forms@0.5.11(tailwindcss@4.3.0):
+    resolution: {integrity: sha512-h9wegbZDPurxG22xZSoWtdzc41/OlNEUQERNqI/0fOwa2aVlWGu7C35E/x6LDyD3lgtztFSSjKZyuVM0hxhbgA==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20 || >= 4.0.0-beta.1'
+    dependencies:
+      mini-svg-data-uri: 1.4.4
+      tailwindcss: 4.3.0
     dev: true
 
   /@tailwindcss/node@4.3.0:
@@ -3889,6 +3904,11 @@ packages:
     os: [darwin]
     optional: true
 
+  /fuse.js@7.3.0:
+    resolution: {integrity: sha512-plz8RVjfcDedTGfVngWH1jmJvBvAwi1v2jecfDerbEnMcmOYUEEwKFTHbNoCiYyzaK2Ws8lABkTCcRSqCY1q4w==}
+    engines: {node: '>=10'}
+    dev: false
+
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
@@ -4333,6 +4353,11 @@ packages:
 
   /mdn-data@2.27.1:
     resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
+    dev: true
+
+  /mini-svg-data-uri@1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
     dev: true
 
   /minimatch@10.2.5:
