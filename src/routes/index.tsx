@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
 import NoteList from '@/components/note-list'
+import NoteListSkeleton from '@/components/note-list-skeleton'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -21,7 +22,11 @@ function Home() {
     <>
       <TopNav />
       <main className='flex grow flex-col gap-4 px-4'>
-        {notes === undefined ? null : <NoteList notes={notes} />}
+        {notes === undefined ? (
+          <NoteListSkeleton />
+        ) : (
+          <NoteList notes={notes} />
+        )}
       </main>
     </>
   )
