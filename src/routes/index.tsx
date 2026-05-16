@@ -17,8 +17,10 @@ function Home() {
           {notes?.map(note => (
             <li key={note.id}>
               <Link
-                // to={`/notes/${note.id}`}
-                to='/'
+                to='/notes/$noteId'
+                params={{
+                  noteId: String(note.id),
+                }}
                 className='text-cb-pink hover:text-cb-pink/75'
               >
                 {note.title}
