@@ -5,7 +5,7 @@ import {
   Show,
 } from '@clerk/tanstack-react-start'
 import { Link, useLocation } from '@tanstack/react-router'
-// import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/20/solid'
+import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/20/solid'
 
 const title = 'nfour'
 
@@ -25,7 +25,7 @@ export default function TopNav() {
       <div className='flex grow justify-end'>
         <Show when='signed-out'>
           <SignInButton>
-            {/* <ArrowRightStartOnRectangleIcon className='h-6 w-6 hover:cursor-pointer' /> */}
+            <ArrowRightStartOnRectangleIcon className='h-6 w-6 hover:cursor-pointer' />
           </SignInButton>
         </Show>
         <Show when='signed-in'>
