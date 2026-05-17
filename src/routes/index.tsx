@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { Show } from '@clerk/tanstack-react-start'
 
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
@@ -22,11 +23,16 @@ function Home() {
     <>
       <TopNav />
       <main className='flex grow flex-col gap-4 px-4'>
-        {notes === undefined ? (
-          <NoteListSkeleton />
-        ) : (
-          <NoteList notes={notes} />
-        )}
+        <Show when='signed-out'>
+          <p>login to see your notes</p>
+        </Show>
+        <Show when='signed-in'>
+          {notes === undefined ? (
+            <NoteListSkeleton />
+          ) : (
+            <NoteList notes={notes} />
+          )}
+        </Show>
       </main>
     </>
   )
