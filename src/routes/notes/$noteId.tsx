@@ -11,7 +11,7 @@ export const Route = createFileRoute('/notes/$noteId')({
 })
 
 const externalNoteUrl = (noteId: string) =>
-  `https:/n4.dlopez.app/notes/${noteId}`
+  `https://n4.dlopez.app/notes/${noteId}`
 
 function RouteComponent() {
   const { noteId } = Route.useParams()
