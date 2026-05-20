@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
-import { Bars2Icon } from '@heroicons/react/20/solid'
+import { Bars2Icon, PencilSquareIcon } from '@heroicons/react/20/solid'
 
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
@@ -9,6 +9,9 @@ import { useTRPC } from '@/integrations/trpc/react'
 export const Route = createFileRoute('/notes/$noteId')({
   component: RouteComponent,
 })
+
+const externalNoteUrl = (noteId: string) =>
+  `https:/n4.dlopez.app/notes/${noteId}`
 
 function RouteComponent() {
   const { noteId } = Route.useParams()
@@ -35,7 +38,15 @@ function RouteComponent() {
             <Bars2Icon className='h-6 w-6' />
           </Link>
         </div>
-        <div className='flex space-x-6'></div>
+        <div className='flex space-x-6'>
+          <a
+            href={externalNoteUrl(noteId)}
+            className='text-cb-yellow hover:text-cb-yellow/75'
+            target='_blank'
+          >
+            <PencilSquareIcon className='h-6 w-6' />
+          </a>
+        </div>
       </footer>
     </>
   )
