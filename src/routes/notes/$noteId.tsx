@@ -1,7 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
-import { Bars2Icon, PencilSquareIcon } from '@heroicons/react/20/solid'
+import {
+  Bars2Icon,
+  DocumentTextIcon,
+  PencilSquareIcon,
+} from '@heroicons/react/20/solid'
+import classNames from 'classnames'
 
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
@@ -10,8 +15,8 @@ export const Route = createFileRoute('/notes/$noteId')({
   component: RouteComponent,
 })
 
-const externalNoteUrl = (noteId: string) =>
-  `https://n4.dlopez.app/notes/${noteId}`
+const editNoteUrl = (noteId: string) => `https://n4.dlopez.app/notes/${noteId}`
+const markdownNoteUrl = (noteId: string) => `https://md.n4.dlopez.app/${noteId}`
 
 function RouteComponent() {
   const { noteId } = Route.useParams()
@@ -21,6 +26,7 @@ function RouteComponent() {
       id: Number(noteId),
     })
   )
+  const hasMarkdown = !!note?.markdown
   return (
     <>
       <Show when='signed-out'>
@@ -40,7 +46,18 @@ function RouteComponent() {
         </div>
         <div className='flex space-x-6'>
           <a
-            href={externalNoteUrl(noteId)}
+            href={markdownNoteUrl(noteId)}
+            className={classNames(
+              'text-cb-yellow hover:text-cb-yellow/75',
+              !hasMarkdown ? 'pointer-events-none opacity-25' : ''
+            )}
+            target='_blank'
+          >
+            <DocumentTextIcon className='h-6 w-6' />
+          </a>
+
+          <a
+            href={editNoteUrl(noteId)}
             className='text-cb-yellow hover:text-cb-yellow/75'
             target='_blank'
           >
