@@ -27,7 +27,7 @@ function RouteComponent() {
         <TopNav />
       </Show>
       <div className='flex grow flex-col p-4'>
-        <pre>{note?.text}</pre>
+        <pre className='whitespace-pre-wrap'>{note?.text}</pre>
       </div>
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-6'>
