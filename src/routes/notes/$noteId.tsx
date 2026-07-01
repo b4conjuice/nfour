@@ -4,6 +4,7 @@ import { Show } from '@clerk/tanstack-react-start'
 import {
   Bars2Icon,
   DocumentTextIcon,
+  ListBulletIcon,
   PencilSquareIcon,
 } from '@heroicons/react/20/solid'
 import classNames from 'classnames'
@@ -55,7 +56,13 @@ function RouteComponent() {
           >
             <DocumentTextIcon className='h-6 w-6' />
           </a>
-
+          <a
+            href={`${editNoteUrl(noteId)}?tab=list`}
+            className='text-cb-yellow hover:text-cb-yellow/75'
+            target='_blank'
+          >
+            <ListBulletIcon className='h-6 w-6' />
+          </a>
           <a
             href={editNoteUrl(noteId)}
             className='text-cb-yellow hover:text-cb-yellow/75'
