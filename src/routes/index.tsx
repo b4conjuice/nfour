@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { Show } from '@clerk/tanstack-react-start'
+import { PencilSquareIcon } from '@heroicons/react/20/solid'
 
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
@@ -15,6 +16,8 @@ export const Route = createFileRoute('/')({
     }
   },
 })
+
+const newNoteUrl = 'https://n4.dlopez.app'
 
 function Home() {
   const trpc = useTRPC()
@@ -34,6 +37,18 @@ function Home() {
           )}
         </Show>
       </main>
+      <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
+        <div className='flex space-x-6'></div>
+        <div className='flex space-x-6'>
+          <a
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
+            href={newNoteUrl}
+            target='_blank'
+          >
+            <PencilSquareIcon className='h-6 w-6' />
+          </a>
+        </div>
+      </footer>
     </>
   )
 }
