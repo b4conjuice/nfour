@@ -3,6 +3,7 @@ import { getRouteApi, Link } from '@tanstack/react-router'
 import { useLocalStorage } from '@uidotdev/usehooks'
 import classNames from 'classnames'
 
+import CommandPalette from '@/components/command-palette'
 import type { Note } from '@/lib/types'
 import useSearch from '@/lib/useSearch'
 
@@ -110,6 +111,43 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           </li>
         ))}
       </ul>
+      <CommandPalette
+        commands={[
+          ...notes.map(note => ({
+            id: `go-note-${note.id}`,
+            title: `go to note: ${note.title}`,
+            action: () => {
+              navigate({
+                to: '/notes/$noteId',
+                params: {
+                  noteId: String(note.id),
+                },
+              })
+            },
+          })),
+          ...allTags.map(tag => ({
+            id: `toggle-tag-${tag}`,
+            title: `toggle tag: ${tag}`,
+            action: () => {
+              const index = selectedTags.findIndex(t => t === tag)
+              const newSelectedTags = [...selectedTags]
+              if (index > -1) {
+                newSelectedTags.splice(index, 1)
+              } else {
+                newSelectedTags.push(tag)
+              }
+              setSelectedTags(newSelectedTags)
+            },
+          })),
+          {
+            id: 'toggle-all-tags-off',
+            title: 'toggle all tags off',
+            action: () => {
+              setSelectedTags([])
+            },
+          },
+        ]}
+      />
     </>
   )
 }
