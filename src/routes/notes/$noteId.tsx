@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
 import {
   Bars2Icon,
@@ -11,6 +11,7 @@ import classNames from 'classnames'
 
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
+import CommandPalette from '@/components/command-palette'
 
 export const Route = createFileRoute('/notes/$noteId')({
   component: RouteComponent,
@@ -20,6 +21,7 @@ const editNoteUrl = (noteId: string) => `https://n4.dlopez.app/notes/${noteId}`
 const markdownNoteUrl = (noteId: string) => `https://md.n4.dlopez.app/${noteId}`
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const { noteId } = Route.useParams()
   const trpc = useTRPC()
   const { data: note } = useQuery(
@@ -72,6 +74,19 @@ function RouteComponent() {
           </a>
         </div>
       </footer>
+      <CommandPalette
+        commands={[
+          {
+            id: 'go-home',
+            title: 'go home',
+            action: () => {
+              navigate({
+                to: '/',
+              })
+            },
+          },
+        ]}
+      />
     </>
   )
 }
