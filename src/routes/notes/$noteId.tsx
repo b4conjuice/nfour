@@ -12,13 +12,11 @@ import classNames from 'classnames'
 import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
 import CommandPalette from '@/components/command-palette'
+import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 
 export const Route = createFileRoute('/notes/$noteId')({
   component: RouteComponent,
 })
-
-const editNoteUrl = (noteId: string) => `https://n4.dlopez.app/notes/${noteId}`
-const markdownNoteUrl = (noteId: string) => `https://md.n4.dlopez.app/${noteId}`
 
 function RouteComponent() {
   const navigate = useNavigate()
