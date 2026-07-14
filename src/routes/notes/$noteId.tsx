@@ -85,6 +85,31 @@ function RouteComponent() {
               })
             },
           },
+          ...(hasMarkdown
+            ? [
+                {
+                  id: 'go-to-markdown',
+                  title: 'go to markdown',
+                  action: () => {
+                    window.open(markdownNoteUrl(noteId), '_blank')
+                  },
+                },
+              ]
+            : []),
+          {
+            id: 'go-to-list',
+            title: 'go to list',
+            action: () => {
+              window.open(`${editNoteUrl(noteId)}?tab=list`, '_blank')
+            },
+          },
+          {
+            id: 'go-to-edit',
+            title: 'go to edit',
+            action: () => {
+              window.open(editNoteUrl(noteId), '_blank')
+            },
+          },
         ]}
       />
     </>
