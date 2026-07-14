@@ -7,6 +7,7 @@ import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
 import NoteList from '@/components/note-list'
 import NoteListSkeleton from '@/components/note-list-skeleton'
+import { newNoteUrl } from '@/lib/constants'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -16,8 +17,6 @@ export const Route = createFileRoute('/')({
     }
   },
 })
-
-const newNoteUrl = 'https://n4.dlopez.app'
 
 function Home() {
   const trpc = useTRPC()

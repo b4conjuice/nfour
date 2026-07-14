@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import CommandPalette from '@/components/command-palette'
 import type { Note } from '@/lib/types'
 import useSearch from '@/lib/useSearch'
+import { newNoteUrl } from '@/lib/constants'
 
 const routeApi = getRouteApi('/')
 
@@ -144,6 +145,13 @@ export default function NoteList({ notes }: { notes: Note[] }) {
             title: 'toggle all tags off',
             action: () => {
               setSelectedTags([])
+            },
+          },
+          {
+            id: 'new-note',
+            title: 'go to new note',
+            action: () => {
+              window.open(newNoteUrl, '_blank')
             },
           },
         ]}
