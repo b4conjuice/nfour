@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
 import {
+  ArrowDownOnSquareIcon,
   Bars2Icon,
   DocumentTextIcon,
   ListBulletIcon,
@@ -13,12 +14,33 @@ import TopNav from '@/components/top-nav'
 import { useTRPC } from '@/integrations/trpc/react'
 import CommandPalette from '@/components/command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
+import useTextarea from '@/lib/useTextarea'
+import Textarea from '@/components/textarea'
+// import { getNote } from '@/db/notes'
 
 export const Route = createFileRoute('/notes/$noteId')({
+  // loader: async ({ params }) => {
+  //   const note = await getNote(Number(params.noteId))
+  //   return { note }
+  // },
+  // head: ({ loaderData }) => ({
+  //   meta: [
+  //     { title: loaderData.note.title },
+  //     // { title: 'test' },
+  //     // { name: 'description', content: loaderData.post.excerpt },
+  //   ],
+  // }),
   component: RouteComponent,
 })
 
+function NoteSkeleton() {
+  return (
+    <textarea className='border-cobalt bg-cobalt caret-cb-yellow focus:border-cb-light-blue text-cb-white h-full w-full grow focus:ring-0' />
+  )
+}
+
 function RouteComponent() {
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { noteId } = Route.useParams()
   const trpc = useTRPC()
@@ -27,15 +49,30 @@ function RouteComponent() {
       id: Number(noteId),
     })
   )
+  const { mutateAsync: saveNote, isPending: isSavingNote } = useMutation(
+    trpc.notes.saveNote.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.notes.getById.queryFilter({ id: Number(noteId) })
+        )
+      },
+    })
+  )
   const hasMarkdown = !!note?.markdown
+
+  const textarea = useTextarea({ initialText: note?.text ?? '' })
+  const { text } = textarea
+  const hasChanges = text !== (note?.text ?? '')
+  const canSave = !(!hasChanges || text === '')
   return (
     <>
       <Show when='signed-out'>
         <TopNav />
       </Show>
-      <div className='flex grow flex-col p-4'>
+      {note === undefined ? <NoteSkeleton /> : <Textarea {...textarea} />}
+      {/* <div className='flex grow flex-col p-4'>
         <pre className='whitespace-pre-wrap'>{note?.text}</pre>
-      </div>
+      </div> */}
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-6'>
           <Link
@@ -70,6 +107,25 @@ function RouteComponent() {
           >
             <PencilSquareIcon className='h-6 w-6' />
           </a>
+          <Show when='signed-in'>
+            <button
+              className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
+              type='button'
+              onClick={async () => {
+                if (!note) return
+                await saveNote({
+                  noteOptions: {
+                    text,
+                    tags: note.tags,
+                  },
+                  id: note.id,
+                })
+              }}
+              disabled={!note || !canSave || isSavingNote}
+            >
+              <ArrowDownOnSquareIcon className='h-6 w-6' />
+            </button>
+          </Show>
         </div>
       </footer>
       <CommandPalette
