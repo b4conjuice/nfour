@@ -2,6 +2,8 @@ import { auth } from '@clerk/tanstack-react-start/server'
 import { and } from 'drizzle-orm'
 
 import { db } from '@/db'
+import type { NewNote, Note } from '@/lib/types'
+import { notes } from './schema'
 
 const LIMIT = 100
 
@@ -23,4 +25,20 @@ export async function getNote(id: number) {
   })
 
   return note
+}
+
+export async function saveNote(note: Note | NewNote) {
+  const newNotes = await db
+    .insert(notes)
+    .values(note)
+    .onConflictDoUpdate({
+      target: notes.id,
+      set: note,
+    })
+    .returning()
+  if (newNotes.length < 0) {
+    throw new Error('something went wrong')
+  }
+  const newNote = newNotes[0]
+  return newNote
 }

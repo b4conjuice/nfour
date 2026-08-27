@@ -40,6 +40,7 @@
     "classnames": "^2.5.1",
     "drizzle-kit": "^0.31.9",
     "drizzle-orm": "^0.45.1",
+    "drizzle-zod": "^0.8.3",
     "fuse.js": "^7.3.0",
     "lucide-react": "^0.545.0",
     "nitro": "npm:nitro-nightly@latest",

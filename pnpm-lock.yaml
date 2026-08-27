@@ -69,6 +69,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.45.1
     version: 0.45.2(@types/pg@8.20.0)(pg@8.20.0)
+  drizzle-zod:
+    specifier: ^0.8.3
+    version: 0.8.3(drizzle-orm@0.45.2)(zod@4.4.3)
   fuse.js:
     specifier: ^7.3.0
     version: 7.3.0
@@ -3602,6 +3605,16 @@ packages:
     dependencies:
       '@types/pg': 8.20.0
       pg: 8.20.0
+    dev: false
+
+  /drizzle-zod@0.8.3(drizzle-orm@0.45.2)(zod@4.4.3):
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
+    dependencies:
+      drizzle-orm: 0.45.2(@types/pg@8.20.0)(pg@8.20.0)
+      zod: 4.4.3
     dev: false
 
   /electron-to-chromium@1.5.356:

@@ -1,10 +1,19 @@
-// types.ts
-import type { InferSelectModel, InferInsertModel } from 'drizzle-orm'
+import type { z } from 'zod'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
-import type { notes } from '@/db/schema'
+import { notes } from '@/db/schema'
 
-// SELECT * FROM users → what you get back
-export type Note = InferSelectModel<typeof notes>
+// Auto-generated Zod schemas from Drizzle
+export const NoteSelectSchema = createSelectSchema(notes)
+export const NoteInsertSchema = createInsertSchema(notes)
 
-// INSERT INTO users (...) → what you can send
-export type NewNote = InferInsertModel<typeof notes>
+// Custom schemas for specific operations
+export const NoteOptionsSchema = NoteInsertSchema.pick({
+  text: true,
+  tags: true,
+})
+
+// Derived types (kept close to source of truth)
+export type Note = typeof notes.$inferSelect
+export type NewNote = typeof notes.$inferInsert
+export type NoteOptions = z.infer<typeof NoteOptionsSchema>
