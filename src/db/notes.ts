@@ -7,7 +7,7 @@ import { notes } from './schema'
 
 const LIMIT = 100
 
-export async function getNotes() {
+export async function getNotes(offset?: number) {
   const user = await auth()
 
   if (!user.userId) throw new Error('unauthorized')
@@ -16,6 +16,7 @@ export async function getNotes() {
     where: (model, { eq }) => eq(model.author, user.userId),
     orderBy: (model, { desc }) => desc(model.updatedAt),
     limit: LIMIT,
+    offset,
   })
 }
 
