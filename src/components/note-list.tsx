@@ -1,11 +1,10 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getRouteApi, Link } from '@tanstack/react-router'
-import { useLocalStorage } from '@uidotdev/usehooks'
+import { useDebounce, useLocalStorage } from '@uidotdev/usehooks'
 import classNames from 'classnames'
 
 import CommandPalette from '@/components/command-palette'
 import type { Note } from '@/lib/types'
-import useSearch from '@/lib/useSearch'
 import { newNoteUrl } from '@/lib/constants'
 
 const routeApi = getRouteApi('/')
@@ -14,6 +13,15 @@ export default function NoteList({ notes }: { notes: Note[] }) {
   const searchParams = routeApi.useSearch()
   const query = searchParams.q
   const navigate = routeApi.useNavigate()
+
+  const [search, setSearch] = useState(query ?? '')
+  const debouncedSearch = useDebounce(search, 300)
+
+  useEffect(() => {
+    navigate({
+      search: { q: debouncedSearch || undefined },
+    })
+  }, [debouncedSearch, navigate])
 
   const [selectedTags, setSelectedTags] = useLocalStorage<string[]>(
     'nfour-selected-tags',
@@ -35,30 +43,17 @@ export default function NoteList({ notes }: { notes: Note[] }) {
       : true
   )
 
-  const { search, setSearch, results, searchRef } = useSearch({
-    initialSearch: query ? String(query) : '',
-    list: taggedNotes,
-    options: {
-      keys: ['title', 'body'],
-    },
-  })
-
   const firstTagButtonRef = useRef<HTMLButtonElement | null>(null)
   return (
     <>
       <div className='flex'>
         <input
-          ref={searchRef}
           type='text'
           className='bg-cb-blue w-full disabled:pointer-events-none disabled:opacity-25'
           placeholder='search'
           value={search}
           onChange={e => {
-            const { value } = e.target
-            setSearch(value)
-            navigate({
-              search: { q: value },
-            })
+            setSearch(e.target.value)
           }}
           disabled={!(notes.length && notes.length > 0)}
         />
@@ -95,7 +90,7 @@ export default function NoteList({ notes }: { notes: Note[] }) {
         </ul>
       )}
       <ul className='divide-cb-dusty-blue divide-y'>
-        {results.map(note => (
+        {taggedNotes.map(note => (
           <li key={note.id} className='group flex gap-2'>
             <Link
               to='/notes/$noteId'

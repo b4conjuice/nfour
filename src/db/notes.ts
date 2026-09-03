@@ -1,5 +1,5 @@
 import { auth } from '@clerk/tanstack-react-start/server'
-import { and } from 'drizzle-orm'
+import { and, eq, ilike, or } from 'drizzle-orm'
 
 import { db } from '@/db'
 import type { NewNote, Note } from '@/lib/types'
@@ -7,13 +7,21 @@ import { notes } from './schema'
 
 const LIMIT = 100
 
-export async function getNotes(offset?: number) {
+export async function getNotes({
+  offset,
+  q,
+}: { offset?: number; q?: string } = {}) {
   const user = await auth()
 
   if (!user.userId) throw new Error('unauthorized')
 
   return await db.query.notes.findMany({
-    where: (model, { eq }) => eq(model.author, user.userId),
+    where: and(
+      eq(notes.author, user.userId),
+      q
+        ? or(ilike(notes.title, `%${q}%`), ilike(notes.body, `%${q}%`))
+        : undefined,
+    ),
     orderBy: (model, { desc }) => desc(model.updatedAt),
     limit: LIMIT,
     offset,

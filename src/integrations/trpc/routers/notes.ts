@@ -18,9 +18,9 @@ export const notesRouter = {
       return await getNote(noteId)
     }),
   getAll: publicProcedure
-    .input(z.object({ offset: z.number().optional() }).optional())
+    .input(z.object({ offset: z.number().optional(), q: z.string().optional() }).optional())
     .query(async ({ input }) => {
-      return await getNotes(input?.offset)
+      return await getNotes(input)
     }),
   saveNote: publicProcedure
     .input(

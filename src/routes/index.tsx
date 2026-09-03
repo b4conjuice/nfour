@@ -27,16 +27,18 @@ export const Route = createFileRoute('/')({
 function Home() {
   const trpc = useTRPC()
   const trpcClient = useTRPCClient()
+  const { q } = Route.useSearch()
 
   const query = useInfiniteQuery({
-    queryKey: trpc.notes.getAll.queryKey(),
+    queryKey: trpc.notes.getAll.queryKey({ q }),
     queryFn: ({ pageParam }) =>
-      trpcClient.notes.getAll.query({ offset: pageParam }),
+      trpcClient.notes.getAll.query({ offset: pageParam, q }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => {
       if (lastPage.length < PAGE_SIZE) return undefined
       return lastPageParam + PAGE_SIZE
     },
+    placeholderData: previousData => previousData,
   })
 
   const notes = query.data?.pages.flat() ?? []
@@ -49,7 +51,7 @@ function Home() {
           <p>login to see your notes</p>
         </Show>
         <Show when='signed-in'>
-          {notes.length === 0 && query.isLoading ? (
+          {query.data === undefined ? (
             <NoteListSkeleton />
           ) : (
             <>
