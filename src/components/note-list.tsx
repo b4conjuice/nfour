@@ -55,7 +55,6 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           onChange={e => {
             setSearch(e.target.value)
           }}
-          disabled={!(notes.length && notes.length > 0)}
         />
       </div>
       {allTags.length > 0 && (
@@ -88,6 +87,9 @@ export default function NoteList({ notes }: { notes: Note[] }) {
             </li>
           ))}
         </ul>
+      )}
+      {taggedNotes.length === 0 && (search || selectedTags.length > 0) && (
+        <p>no results found</p>
       )}
       <ul className='divide-cb-dusty-blue divide-y'>
         {taggedNotes.map(note => (
