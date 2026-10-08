@@ -10,8 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as NotesNewRouteImport } from './routes/notes/new'
 import { Route as NotesNoteIdRouteImport } from './routes/notes/$noteId'
+import { Route as NotesNewRouteImport } from './routes/notes/new'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api.trpc.$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -19,14 +19,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NotesNewRoute = NotesNewRouteImport.update({
-  id: '/notes/new',
-  path: '/notes/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NotesNoteIdRoute = NotesNoteIdRouteImport.update({
   id: '/notes/$noteId',
   path: '/notes/$noteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesNewRoute = NotesNewRouteImport.update({
+  id: '/notes/new',
+  path: '/notes/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
@@ -78,18 +78,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/notes/new': {
-      id: '/notes/new'
-      path: '/notes/new'
-      fullPath: '/notes/new'
-      preLoaderRoute: typeof NotesNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/notes/$noteId': {
       id: '/notes/$noteId'
       path: '/notes/$noteId'
       fullPath: '/notes/$noteId'
       preLoaderRoute: typeof NotesNoteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes/new': {
+      id: '/notes/new'
+      path: '/notes/new'
+      fullPath: '/notes/new'
+      preLoaderRoute: typeof NotesNewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/trpc/$': {
