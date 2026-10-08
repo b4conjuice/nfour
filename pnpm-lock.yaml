@@ -9,6 +9,9 @@ onlyBuiltDependencies:
   - lightningcss
 
 dependencies:
+  '@bacondotbuild/n4':
+    specifier: ^1.0.2
+    version: 1.0.2
   '@clerk/clerk-react':
     specifier: ^5.61.3
     version: 5.61.3(react-dom@19.2.6)(react@19.2.6)
@@ -384,6 +387,10 @@ packages:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+    dev: false
+
+  /@bacondotbuild/n4@1.0.2:
+    resolution: {integrity: sha512-hzSN02MSzPhYfg36VTKMvJ3H1LFL6m7Trp/J8XayCnvnG1Spn808gU1+AG9TYfgvLZDm0tYJz01ecHb08Vfxug==}
     dev: false
 
   /@bramus/specificity@2.4.2:
