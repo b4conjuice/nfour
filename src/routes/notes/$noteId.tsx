@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
@@ -16,6 +17,7 @@ import CommandPalette from '@/components/command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 import useTextarea from '@/lib/useTextarea'
 import Textarea from '@/components/textarea'
+import { DEFAULT_TITLE } from '@/routes/__root'
 // import { getNote } from '@/db/notes'
 
 export const Route = createFileRoute('/notes/$noteId')({
@@ -49,6 +51,10 @@ function RouteComponent() {
       id: Number(noteId),
     })
   )
+
+  useEffect(() => {
+    document.title = note ? `${note.title} - ${DEFAULT_TITLE}` : DEFAULT_TITLE
+  }, [note])
   const { mutateAsync: saveNote, isPending: isSavingNote } = useMutation(
     trpc.notes.saveNote.mutationOptions({
       onSuccess: async () => {
