@@ -10,8 +10,8 @@ onlyBuiltDependencies:
 
 dependencies:
   '@bacondotbuild/n4':
-    specifier: ^1.0.2
-    version: 1.0.2
+    specifier: ^1.0.3
+    version: 1.0.3(react@19.2.6)
   '@clerk/clerk-react':
     specifier: ^5.61.3
     version: 5.61.3(react-dom@19.2.6)(react@19.2.6)
@@ -531,8 +531,13 @@ packages:
       '@babel/helper-validator-identifier': 7.29.7
     dev: false
 
-  /@bacondotbuild/n4@1.0.2:
-    resolution: {integrity: sha512-hzSN02MSzPhYfg36VTKMvJ3H1LFL6m7Trp/J8XayCnvnG1Spn808gU1+AG9TYfgvLZDm0tYJz01ecHb08Vfxug==}
+  /@bacondotbuild/n4@1.0.3(react@19.2.6):
+    resolution: {integrity: sha512-SG12Fy09xNXch4Hcy3/ozXej4XDWncswjG0gA6FdF1mr2iQxhpAWzdi1CKXK1s0PL4og7yAgvuzLtml3rjZpkg==}
+    dependencies:
+      '@tanstack/markdown': 1.0.0(react@19.2.6)
+    transitivePeerDependencies:
+      - octane
+      - react
     dev: false
 
   /@bramus/specificity@2.4.2:
@@ -2265,6 +2270,20 @@ packages:
   /@tanstack/history@1.162.4:
     resolution: {integrity: sha512-utTS5L2OkeYUzXGohL1Z8sefu1GLNOJcxe8Hd6iIdc/Xo1K1nDB2JEp4iSFhvYh33xKC9V91TxrS8qfrpoKobQ==}
     engines: {node: '>=20.19'}
+    dev: false
+
+  /@tanstack/markdown@1.0.0(react@19.2.6):
+    resolution: {integrity: sha512-zE07RepFMbSQlHdnE82twgiVOKy50rP6a/X9UPOOBt8Z8x9lzaPvGpn2zioCnjXMvNt/IQkW5sSalXQ25C/FKw==}
+    peerDependencies:
+      octane: '>=0.1.12'
+      react: '>=18'
+    peerDependenciesMeta:
+      octane:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 19.2.6
     dev: false
 
   /@tanstack/query-core@5.100.10:
