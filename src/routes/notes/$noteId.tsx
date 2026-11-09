@@ -18,21 +18,17 @@ import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 import useTextarea from '@/lib/useTextarea'
 import Textarea from '@/components/textarea'
 import { DEFAULT_TITLE } from '@/routes/__root'
-// import { getNote } from '@/db/notes'
+import { getNoteTitle } from '@/server/notes'
 
 export const Route = createFileRoute('/notes/$noteId')({
-  // loader: async ({ params }) => {
-  //   const note = await getNote(Number(params.noteId))
-  //   return { note }
-  // },
-  // head: ({ loaderData }) => ({
-  //   meta: [
-  //     { title: loaderData.note.title },
-  //     // { title: 'test' },
-  //     // { name: 'description', content: loaderData.post.excerpt },
-  //   ],
-  // }),
   component: RouteComponent,
+  loader: async ({ params }) => {
+    const title = await getNoteTitle({ data: Number(params.noteId) })
+    return { title }
+  },
+  head: ({ loaderData }) => ({
+    meta: [{ title: loaderData?.title ?? DEFAULT_TITLE }],
+  }),
 })
 
 function NoteSkeleton() {
@@ -51,10 +47,6 @@ function RouteComponent() {
       id: Number(noteId),
     })
   )
-
-  useEffect(() => {
-    document.title = note ? `${note.title} - ${DEFAULT_TITLE}` : DEFAULT_TITLE
-  }, [note])
   const { mutateAsync: saveNote, isPending: isSavingNote } = useMutation(
     trpc.notes.saveNote.mutationOptions({
       onSuccess: async () => {
