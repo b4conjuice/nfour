@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 import {
   Combobox,
   ComboboxInput,
@@ -16,6 +16,7 @@ import {
   RocketLaunchIcon,
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
+import { useHotkeys } from '@tanstack/react-hotkeys'
 import Fuse from 'fuse.js'
 
 interface Command {
@@ -43,17 +44,10 @@ export default function CommandPalette({
   const isOpen = externalIsOpen ?? internalIsOpen
   const setIsOpen = externalSetIsOpen ?? internalSetIsOpen
 
-  useEffect(() => {
-    function onKeydown(e: KeyboardEvent) {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        setIsOpen(!isOpen)
-      }
-    }
-    window.addEventListener('keydown', onKeydown)
-    return () => {
-      window.removeEventListener('keydown', onKeydown)
-    }
-  }, [isOpen, setIsOpen])
+  useHotkeys([
+    { hotkey: 'Meta+K', callback: () => setIsOpen(prev => !prev) },
+    { hotkey: 'Control+K', callback: () => setIsOpen(prev => !prev) },
+  ])
 
   const fuse = new Fuse(commands, {
     keys: ['id', 'title', { name: 'name', weight: 2 }],

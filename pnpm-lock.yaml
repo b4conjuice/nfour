@@ -30,6 +30,9 @@ dependencies:
   '@tanstack/react-devtools':
     specifier: latest
     version: 0.10.5(@types/react-dom@19.2.3)(@types/react@19.2.14)(csstype@3.2.3)(react-dom@19.2.6)(react@19.2.6)(solid-js@1.9.13)
+  '@tanstack/react-hotkeys':
+    specifier: ^0.23.0
+    version: 0.23.0(react-dom@19.2.6)(react@19.2.6)
   '@tanstack/react-query':
     specifier: latest
     version: 5.100.10(react@19.2.6)
@@ -2272,6 +2275,11 @@ packages:
     engines: {node: '>=20.19'}
     dev: false
 
+  /@tanstack/hotkeys@0.27.0:
+    resolution: {integrity: sha512-nFg/Shd0MHECBgi+R2p8ct7qFrQVRW7+buIJgq63YrDdQpsetFwttKJOWhyesalJtBK9igEISRjk49N1q77fqw==}
+    engines: {node: '>=20'}
+    dev: false
+
   /@tanstack/markdown@1.0.0(react@19.2.6):
     resolution: {integrity: sha512-zE07RepFMbSQlHdnE82twgiVOKy50rP6a/X9UPOOBt8Z8x9lzaPvGpn2zioCnjXMvNt/IQkW5sSalXQ25C/FKw==}
     peerDependencies:
@@ -2313,6 +2321,18 @@ packages:
       - csstype
       - solid-js
       - utf-8-validate
+    dev: false
+
+  /@tanstack/react-hotkeys@0.23.0(react-dom@19.2.6)(react@19.2.6):
+    resolution: {integrity: sha512-RfzJhJrzXLt/9l29Se5ZhEvANPSooF8IAymlFR/JKHdrf7+tWl2Vd3GpJt3PdIbztMAml4EbnjWVmwF/aqgfxg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      '@tanstack/hotkeys': 0.27.0
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
     dev: false
 
   /@tanstack/react-query-devtools@5.100.10(@tanstack/react-query@5.100.10)(react@19.2.6):
