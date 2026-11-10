@@ -17,6 +17,7 @@ import {
   MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import { useHotkeys } from '@tanstack/react-hotkeys'
+import type { RegisterableHotkey } from '@tanstack/react-hotkeys'
 import Fuse from 'fuse.js'
 
 interface Command {
@@ -32,22 +33,32 @@ export default function CommandPalette({
   isOpen: externalIsOpen,
   setIsOpen: externalSetIsOpen,
   showLaunchButton,
+  toggleIsOpenHotKey,
 }: {
   commands: Command[]
   placeholder?: string
   isOpen?: boolean
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>
   showLaunchButton?: boolean
+  toggleIsOpenHotKey?: RegisterableHotkey | RegisterableHotkey[]
 }) {
   const [internalIsOpen, internalSetIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const isOpen = externalIsOpen ?? internalIsOpen
   const setIsOpen = externalSetIsOpen ?? internalSetIsOpen
 
-  useHotkeys([
-    { hotkey: 'Meta+K', callback: () => setIsOpen(prev => !prev) },
-    { hotkey: 'Control+K', callback: () => setIsOpen(prev => !prev) },
-  ])
+  const toggleIsOpenHotKeys: RegisterableHotkey[] = toggleIsOpenHotKey
+    ? Array.isArray(toggleIsOpenHotKey)
+      ? toggleIsOpenHotKey
+      : [toggleIsOpenHotKey]
+    : ['Meta+K', 'Control+K']
+
+  useHotkeys(
+    toggleIsOpenHotKeys.map(hotkey => ({
+      hotkey,
+      callback: () => setIsOpen(prev => !prev),
+    }))
+  )
 
   const fuse = new Fuse(commands, {
     keys: ['id', 'title', { name: 'name', weight: 2 }],
