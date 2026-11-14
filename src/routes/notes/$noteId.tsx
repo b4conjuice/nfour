@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
@@ -12,6 +12,7 @@ import {
 import classNames from 'classnames'
 
 import TopNav from '@/components/top-nav'
+import Modal from '@/components/modal'
 import { useTRPC } from '@/integrations/trpc/react'
 import CommandPalette from '@/components/command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
@@ -62,23 +63,38 @@ function RouteComponent() {
   const { text } = textarea
   const hasChanges = text !== (note?.text ?? '')
   const canSave = !(!hasChanges || text === '')
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
   return (
     <>
       <Show when='signed-out'>
         <TopNav />
       </Show>
-      {note === undefined ? <NoteSkeleton /> : <Textarea {...textarea} />}
+      {note === undefined ? (
+        <NoteSkeleton />
+      ) : (
+        <Textarea {...textarea} hasChanges={hasChanges} />
+      )}
       {/* <div className='flex grow flex-col p-4'>
         <pre className='whitespace-pre-wrap'>{note?.text}</pre>
       </div> */}
       <footer className='bg-cb-dusty-blue sticky bottom-0 flex items-center justify-between px-2 pt-2 pb-6'>
         <div className='flex space-x-6'>
-          <Link
-            className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
-            to='/'
-          >
-            <Bars2Icon className='h-6 w-6' />
-          </Link>
+          {hasChanges ? (
+            <button
+              className='text-cb-yellow hover:text-cb-yellow/75'
+              type='button'
+              onClick={() => setShowDiscardConfirm(true)}
+            >
+              <Bars2Icon className='h-6 w-6' />
+            </button>
+          ) : (
+            <Link
+              className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
+              to='/'
+            >
+              <Bars2Icon className='h-6 w-6' />
+            </Link>
+          )}
         </div>
         <div className='flex space-x-6'>
           <a
@@ -107,7 +123,10 @@ function RouteComponent() {
           </a>
           <Show when='signed-in'>
             <button
-              className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
+              className={classNames(
+                'hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25',
+                canSave ? 'text-cb-orange' : 'text-cb-yellow'
+              )}
               type='button'
               onClick={async () => {
                 if (!note) return
@@ -126,6 +145,35 @@ function RouteComponent() {
           </Show>
         </div>
       </footer>
+      <Modal
+        title='unsaved changes'
+        isOpen={showDiscardConfirm}
+        setIsOpen={setShowDiscardConfirm}
+      >
+        <p>
+          there are unsaved changes, are you sure you would like to discard them
+          and go back to notes?
+        </p>
+        <div className='flex gap-4'>
+          <button
+            className='text-cb-yellow hover:text-cb-yellow/75'
+            type='button'
+            onClick={() => setShowDiscardConfirm(false)}
+          >
+            cancel
+          </button>
+          <button
+            className='text-cb-orange hover:text-cb-orange/75'
+            type='button'
+            onClick={() => {
+              setShowDiscardConfirm(false)
+              navigate({ to: '/' })
+            }}
+          >
+            discard & go back
+          </button>
+        </div>
+      </Modal>
       <CommandPalette
         commands={[
           {

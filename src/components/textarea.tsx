@@ -7,6 +7,7 @@ import type {
 } from 'react'
 
 import { useLocalStorage } from '@uidotdev/usehooks'
+import classNames from 'classnames'
 
 export default function Textarea({
   textAreaRef,
@@ -16,6 +17,7 @@ export default function Textarea({
   setCurrentSelectionStart,
   // currentSelectionEnd,
   setCurrentSelectionEnd,
+  hasChanges = false,
   textareaProps,
 }: {
   textAreaRef: RefObject<HTMLTextAreaElement | null>
@@ -25,6 +27,7 @@ export default function Textarea({
   setCurrentSelectionStart: Dispatch<SetStateAction<number>>
   currentSelectionEnd: number
   setCurrentSelectionEnd: Dispatch<SetStateAction<number>>
+  hasChanges?: boolean
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>
 }) {
   const [isFullScreen, setIsFullScreen] = useState(false)
@@ -33,7 +36,12 @@ export default function Textarea({
     <textarea
       {...textareaProps}
       ref={textAreaRef}
-      className='border-cobalt bg-cobalt caret-cb-yellow focus:border-cb-light-blue text-cb-white h-full w-full grow focus:ring-0'
+      className={classNames(
+        'bg-cobalt caret-cb-yellow text-cb-white h-full w-full grow focus:ring-0',
+        hasChanges
+          ? 'border-cb-orange focus:border-cb-orange'
+          : 'border-cobalt focus:border-cb-light-blue'
+      )}
       value={text}
       onChange={e => {
         setText(e.target.value)
