@@ -10,8 +10,8 @@ onlyBuiltDependencies:
 
 dependencies:
   '@bacondotbuild/n4':
-    specifier: ^1.0.3
-    version: 1.0.3(react@19.2.6)
+    specifier: ^1.0.4
+    version: 1.0.4(react@19.2.6)
   '@clerk/clerk-react':
     specifier: ^5.61.3
     version: 5.61.3(react-dom@19.2.6)(react@19.2.6)
@@ -534,8 +534,8 @@ packages:
       '@babel/helper-validator-identifier': 7.29.7
     dev: false
 
-  /@bacondotbuild/n4@1.0.3(react@19.2.6):
-    resolution: {integrity: sha512-SG12Fy09xNXch4Hcy3/ozXej4XDWncswjG0gA6FdF1mr2iQxhpAWzdi1CKXK1s0PL4og7yAgvuzLtml3rjZpkg==}
+  /@bacondotbuild/n4@1.0.4(react@19.2.6):
+    resolution: {integrity: sha512-qC4rlDAw3tHywFAO/nPaOHItQSKGqPYmp0lqQuErAUKDi4TfrDnfBfPh/itFzU3VTQ0x8trAmqdkrL+6bCr5sQ==}
     dependencies:
       '@tanstack/markdown': 1.0.0(react@19.2.6)
     transitivePeerDependencies:
