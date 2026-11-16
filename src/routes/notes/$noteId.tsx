@@ -4,6 +4,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { Show } from '@clerk/tanstack-react-start'
 import {
   ArrowDownOnSquareIcon,
+  ArrowTopRightOnSquareIcon,
   Bars2Icon,
   DocumentTextIcon,
   ListBulletIcon,
@@ -128,6 +129,13 @@ function RouteComponent() {
           >
             <DocumentTextIcon className='h-6 w-6' />
           </a>
+          <a
+            href={editNoteUrl(noteId)}
+            className='text-cb-yellow hover:text-cb-yellow/75'
+            target='_blank'
+          >
+            <ArrowTopRightOnSquareIcon className='h-6 w-6' />
+          </a>
           <button
             className={classNames(
               'hover:text-cb-yellow/75',
@@ -140,13 +148,18 @@ function RouteComponent() {
           >
             <ListBulletIcon className='h-6 w-6' />
           </button>
-          <a
-            href={editNoteUrl(noteId)}
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            target='_blank'
+          <button
+            className={classNames(
+              'hover:text-cb-yellow/75',
+              isListView ? 'text-cb-orange' : 'text-cb-yellow'
+            )}
+            type='button'
+            onClick={() => {
+              // set note view
+            }}
           >
             <PencilSquareIcon className='h-6 w-6' />
-          </a>
+          </button>
           <Show when='signed-in'>
             <button
               className={classNames(
