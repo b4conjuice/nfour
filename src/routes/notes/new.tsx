@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useHotkey } from '@tanstack/react-hotkeys'
 import { Show } from '@clerk/tanstack-react-start'
 import {
   ArrowDownOnSquareIcon,
@@ -50,6 +51,24 @@ function RouteComponent() {
   const [text, setText] = useLocalStorage('nfour-new-note-text', initialText)
   const hasChanges = text !== initialText
   const canSave = !(!hasChanges || text === '')
+  const save = async () => {
+    if (!canSave || isSavingNote) return
+    const noteId = await saveNote({
+      noteOptions: {
+        text,
+        tags: [],
+      },
+    })
+    setText('')
+
+    await navigate({
+      to: `/notes/${noteId}`,
+    })
+  }
+  useHotkey('Mod+S', save, {
+    preventDefault: true,
+    enabled: canSave && !isSavingNote,
+  })
 
   const textarea = useTextarea({ text, setText })
   const [title, ...bodyParts] = text.split('\n\n')
@@ -122,19 +141,7 @@ function RouteComponent() {
             <button
               className='text-cb-yellow hover:text-cb-yellow/75 disabled:pointer-events-none disabled:opacity-25'
               type='button'
-              onClick={async () => {
-                const noteId = await saveNote({
-                  noteOptions: {
-                    text,
-                    tags: [],
-                  },
-                })
-                setText('')
-
-                await navigate({
-                  to: `/notes/${noteId}`,
-                })
-              }}
+              onClick={save}
               disabled={!canSave || isSavingNote}
             >
               <ArrowDownOnSquareIcon className='h-6 w-6' />
