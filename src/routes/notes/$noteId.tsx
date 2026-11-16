@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { useHotkey } from '@tanstack/react-hotkeys'
 import { Show } from '@clerk/tanstack-react-start'
 import {
   ArrowDownOnSquareIcon,
@@ -84,6 +85,20 @@ function RouteComponent() {
   const { text } = textarea
   const hasChanges = text !== (note?.text ?? '')
   const canSave = !(!hasChanges || text === '')
+  const save = async () => {
+    if (!note || !canSave || isSavingNote) return
+    await saveNote({
+      noteOptions: {
+        text,
+        tags: note.tags,
+      },
+      id: note.id,
+    })
+  }
+  useHotkey('Mod+S', save, {
+    preventDefault: true,
+    enabled: canSave && !isSavingNote,
+  })
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
   const [title, ...bodyParts] = text.split('\n\n')
   const body = bodyParts.join('\n\n')
@@ -181,16 +196,7 @@ function RouteComponent() {
                 canSave ? 'text-cb-orange' : 'text-cb-yellow'
               )}
               type='button'
-              onClick={async () => {
-                if (!note) return
-                await saveNote({
-                  noteOptions: {
-                    text,
-                    tags: note.tags,
-                  },
-                  id: note.id,
-                })
-              }}
+              onClick={save}
               disabled={!note || !canSave || isSavingNote}
             >
               <ArrowDownOnSquareIcon className='h-6 w-6' />
