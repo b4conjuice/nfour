@@ -13,6 +13,7 @@ import classNames from 'classnames'
 
 import TopNav from '@/components/top-nav'
 import Modal from '@/components/modal'
+import List from '@/components/list'
 import { useTRPC } from '@/integrations/trpc/react'
 import CommandPalette from '@/components/command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
@@ -64,6 +65,11 @@ function RouteComponent() {
   const hasChanges = text !== (note?.text ?? '')
   const canSave = !(!hasChanges || text === '')
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
+  const [isListView, setIsListView] = useState(false)
+  const [title, ...bodyParts] = text.split('\n\n')
+  const body = bodyParts.join('\n\n')
+  const bodyItems =
+    body === '' ? [] : body.split('\n').filter(item => item !== '')
   return (
     <>
       <Show when='signed-out'>
@@ -71,6 +77,21 @@ function RouteComponent() {
       </Show>
       {note === undefined ? (
         <NoteSkeleton />
+      ) : isListView ? (
+        <>
+          <TopNav title={title} />
+          <main className='flex grow flex-col'>
+            <List
+              items={bodyItems}
+              setItems={newItems => {
+                const newBody = newItems.join('\n')
+                textarea.setText(
+                  newBody === '' ? title : `${title}\n\n${newBody}`
+                )
+              }}
+            />
+          </main>
+        </>
       ) : (
         <Textarea {...textarea} hasChanges={hasChanges} />
       )}
@@ -107,13 +128,18 @@ function RouteComponent() {
           >
             <DocumentTextIcon className='h-6 w-6' />
           </a>
-          <a
-            href={`${editNoteUrl(noteId)}?tab=list`}
-            className='text-cb-yellow hover:text-cb-yellow/75'
-            target='_blank'
+          <button
+            className={classNames(
+              'hover:text-cb-yellow/75',
+              isListView ? 'text-cb-orange' : 'text-cb-yellow'
+            )}
+            type='button'
+            onClick={() => {
+              setIsListView(prev => !prev)
+            }}
           >
             <ListBulletIcon className='h-6 w-6' />
-          </a>
+          </button>
           <a
             href={editNoteUrl(noteId)}
             className='text-cb-yellow hover:text-cb-yellow/75'
