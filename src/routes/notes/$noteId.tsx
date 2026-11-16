@@ -23,8 +23,18 @@ import Textarea from '@/components/textarea'
 import { DEFAULT_TITLE } from '@/routes/__root'
 import { getNoteTitle } from '@/server/notes'
 
+const TABS = ['default', 'list'] as const
+type Tab = (typeof TABS)[number]
+
+const isTab = (value: unknown): value is Tab => TABS.includes(value as Tab)
+
 export const Route = createFileRoute('/notes/$noteId')({
   component: RouteComponent,
+  validateSearch: (search: Record<string, string>): { tab?: Tab } => {
+    return {
+      tab: isTab(search.tab) ? search.tab : undefined,
+    }
+  },
   loader: async ({ params }) => {
     const title = await getNoteTitle({ data: Number(params.noteId) })
     return { title }
@@ -43,6 +53,15 @@ function NoteSkeleton() {
 function RouteComponent() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const tabNavigate = Route.useNavigate()
+  const { tab: tabParam } = Route.useSearch()
+  const tab = tabParam ?? 'default'
+  const setTab = (newTab: Tab) => {
+    tabNavigate({
+      search: { tab: newTab === 'default' ? undefined : newTab },
+    })
+  }
+  const isListView = tab === 'list'
   const { noteId } = Route.useParams()
   const trpc = useTRPC()
   const { data: note } = useQuery(
@@ -66,7 +85,6 @@ function RouteComponent() {
   const hasChanges = text !== (note?.text ?? '')
   const canSave = !(!hasChanges || text === '')
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
-  const [isListView, setIsListView] = useState(false)
   const [title, ...bodyParts] = text.split('\n\n')
   const body = bodyParts.join('\n\n')
   const bodyItems =
@@ -137,26 +155,22 @@ function RouteComponent() {
             <ArrowTopRightOnSquareIcon className='h-6 w-6' />
           </a>
           <button
-            className={classNames(
-              'hover:text-cb-yellow/75',
-              isListView ? 'text-cb-orange' : 'text-cb-yellow'
-            )}
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
             type='button'
             onClick={() => {
-              setIsListView(prev => !prev)
+              setTab('list')
             }}
+            disabled={isListView}
           >
             <ListBulletIcon className='h-6 w-6' />
           </button>
           <button
-            className={classNames(
-              'hover:text-cb-yellow/75',
-              isListView ? 'text-cb-orange' : 'text-cb-yellow'
-            )}
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
             type='button'
             onClick={() => {
-              // set note view
+              setTab('default')
             }}
+            disabled={!isListView}
           >
             <PencilSquareIcon className='h-6 w-6' />
           </button>
