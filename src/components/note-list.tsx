@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { getRouteApi, Link } from '@tanstack/react-router'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useDebounce, useLocalStorage } from '@uidotdev/usehooks'
+import { TagIcon } from '@heroicons/react/20/solid'
 import classNames from 'classnames'
 
 import CommandPalette from '@/components/command-palette'
+import Modal from '@/components/modal'
+import { EditTags } from '@/components/tags'
+import { useTRPC } from '@/integrations/trpc/react'
 import type { Note } from '@/lib/types'
 
 const routeApi = getRouteApi('/')
@@ -12,6 +17,20 @@ export default function NoteList({ notes }: { notes: Note[] }) {
   const searchParams = routeApi.useSearch()
   const query = searchParams.q
   const navigate = routeApi.useNavigate()
+
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const { mutateAsync: saveNote } = useMutation(
+    trpc.notes.saveNote.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(trpc.notes.getAll.pathFilter())
+      },
+    })
+  )
+
+  const [isSetTagsModalOpen, setIsSetTagsModalOpen] = useState(false)
+  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null)
+  const selectedNote = notes.find(note => note.id === selectedNoteId)
 
   const [search, setSearch] = useState(query ?? '')
   const debouncedSearch = useDebounce(search, 300)
@@ -105,9 +124,43 @@ export default function NoteList({ notes }: { notes: Note[] }) {
                 {note.tags.length > 0 && <div>{note.tags.join(' ')}</div>}
               </div>
             </Link>
+            <div className='flex gap-2'>
+              <button
+                type='button'
+                onClick={() => {
+                  setSelectedNoteId(note.id)
+                  setIsSetTagsModalOpen(true)
+                }}
+                tabIndex={-1}
+                className='text-cb-yellow hover:text-cb-yellow/75'
+              >
+                <TagIcon className='h-6 w-6' />
+              </button>
+            </div>
           </li>
         ))}
       </ul>
+      <Modal
+        isOpen={isSetTagsModalOpen}
+        setIsOpen={setIsSetTagsModalOpen}
+        title='edit tags'
+      >
+        {selectedNote && (
+          <EditTags
+            note={selectedNote}
+            allTags={allTags}
+            onSave={async tags => {
+              await saveNote({
+                id: selectedNote.id,
+                noteOptions: {
+                  text: selectedNote.text,
+                  tags,
+                },
+              })
+            }}
+          />
+        )}
+      </Modal>
       <CommandPalette
         commands={[
           ...notes.map(note => ({
