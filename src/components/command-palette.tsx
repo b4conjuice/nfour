@@ -20,7 +20,7 @@ import { useHotkeys } from '@tanstack/react-hotkeys'
 import type { RegisterableHotkey } from '@tanstack/react-hotkeys'
 import Fuse from 'fuse.js'
 
-interface Command {
+export interface Command {
   id: string
   title: string
   subtitle?: string

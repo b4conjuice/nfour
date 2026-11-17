@@ -17,7 +17,7 @@ import TopNav from '@/components/top-nav'
 import Modal from '@/components/modal'
 import List from '@/components/list'
 import { useTRPC } from '@/integrations/trpc/react'
-import CommandPalette from '@/components/command-palette'
+import NavigateCommandPalette from '@/components/navigate-command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 import useTextarea from '@/lib/useTextarea'
 import Textarea from '@/components/textarea'
@@ -233,17 +233,8 @@ function RouteComponent() {
           </button>
         </div>
       </Modal>
-      <CommandPalette
+      <NavigateCommandPalette
         commands={[
-          {
-            id: 'go-home',
-            title: 'go home',
-            action: () => {
-              navigate({
-                to: '/',
-              })
-            },
-          },
           ...(hasMarkdown
             ? [
                 {

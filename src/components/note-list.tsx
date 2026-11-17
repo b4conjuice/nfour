@@ -5,7 +5,7 @@ import { useDebounce, useLocalStorage } from '@uidotdev/usehooks'
 import { TagIcon } from '@heroicons/react/20/solid'
 import classNames from 'classnames'
 
-import CommandPalette from '@/components/command-palette'
+import NavigateCommandPalette from '@/components/navigate-command-palette'
 import Modal from '@/components/modal'
 import { EditTags } from '@/components/tags'
 import { useTRPC } from '@/integrations/trpc/react'
@@ -161,7 +161,7 @@ export default function NoteList({ notes }: { notes: Note[] }) {
           />
         )}
       </Modal>
-      <CommandPalette
+      <NavigateCommandPalette
         commands={[
           ...notes.map(note => ({
             id: `go-note-${note.id}`,
@@ -194,15 +194,6 @@ export default function NoteList({ notes }: { notes: Note[] }) {
             title: 'toggle all tags off',
             action: () => {
               setSelectedTags([])
-            },
-          },
-          {
-            id: 'new-note',
-            title: 'go to new note',
-            action: () => {
-              navigate({
-                to: '/notes/new',
-              })
             },
           },
         ]}

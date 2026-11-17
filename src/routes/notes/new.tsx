@@ -13,6 +13,7 @@ import { useLocalStorage } from '@uidotdev/usehooks'
 import TopNav from '@/components/top-nav'
 import Textarea from '@/components/textarea'
 import List from '@/components/list'
+import NavigateCommandPalette from '@/components/navigate-command-palette'
 import useTextarea from '@/lib/useTextarea'
 import { useTRPC } from '@/integrations/trpc/react'
 import { DEFAULT_TITLE } from '@/routes/__root'
@@ -149,6 +150,7 @@ function RouteComponent() {
           </Show>
         </div>
       </footer>
+      <NavigateCommandPalette />
     </>
   )
 }
