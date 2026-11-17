@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useHotkey } from '@tanstack/react-hotkeys'
@@ -7,10 +7,14 @@ import {
   ArrowDownOnSquareIcon,
   ArrowTopRightOnSquareIcon,
   Bars2Icon,
+  CheckIcon,
+  DocumentDuplicateIcon,
   DocumentTextIcon,
   ListBulletIcon,
   PencilSquareIcon,
+  ShareIcon,
 } from '@heroicons/react/20/solid'
+import { useCopyToClipboard } from '@uidotdev/usehooks'
 import classNames from 'classnames'
 
 import TopNav from '@/components/top-nav'
@@ -25,7 +29,7 @@ import Textarea from '@/components/textarea'
 import { DEFAULT_TITLE } from '@/routes/__root'
 import { getNoteTitle } from '@/server/notes'
 
-const TABS = ['default', 'list'] as const
+const TABS = ['default', 'list', 'share'] as const
 type Tab = (typeof TABS)[number]
 
 const isTab = (value: unknown): value is Tab => TABS.includes(value as Tab)
@@ -64,6 +68,17 @@ function RouteComponent() {
     })
   }
   const isListView = tab === 'list'
+  const [, copyToClipboard] = useCopyToClipboard()
+  const [copied, setCopied] = useState<'text' | 'url' | null>(null)
+  useEffect(() => {
+    if (!copied) return
+    const timeout = setTimeout(() => setCopied(null), 1500)
+    return () => clearTimeout(timeout)
+  }, [copied])
+  const [shareUrl, setShareUrl] = useState('')
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}${window.location.pathname}`)
+  }, [])
   const { noteId } = Route.useParams()
   const trpc = useTRPC()
   const { data: note } = useQuery(
@@ -113,6 +128,56 @@ function RouteComponent() {
       </Show>
       {note === undefined ? (
         <NoteSkeleton />
+      ) : tab === 'share' ? (
+        <main className='flex grow flex-col gap-2 p-2'>
+          <button
+            type='button'
+            title='copy note'
+            className='bg-cb-blue hover:bg-cb-off-blue relative w-full overflow-x-auto rounded-lg p-4 text-left'
+            onClick={async () => {
+              await copyToClipboard(text)
+              setCopied('text')
+            }}
+          >
+            <pre className='font-mono text-sm whitespace-pre'>
+              <code>{text}</code>
+            </pre>
+            <span className='text-cb-yellow absolute top-2 right-2 flex items-center gap-1 text-xs'>
+              {copied === 'text' ? (
+                <>
+                  <CheckIcon className='h-4 w-4' /> copied
+                </>
+              ) : (
+                <>
+                  <DocumentDuplicateIcon className='h-4 w-4' /> copy
+                </>
+              )}
+            </span>
+          </button>
+          <h2 className='px-2'>url</h2>
+          <button
+            type='button'
+            title='copy url'
+            className='bg-cb-blue hover:bg-cb-off-blue text-cb-yellow flex w-full items-center justify-between rounded-lg px-2 py-3 text-left'
+            onClick={async () => {
+              await copyToClipboard(shareUrl)
+              setCopied('url')
+            }}
+          >
+            <span className='overflow-x-auto'>{shareUrl}</span>
+            <span className='flex items-center gap-1 text-xs'>
+              {copied === 'url' ? (
+                <>
+                  <CheckIcon className='h-4 w-4' /> copied
+                </>
+              ) : (
+                <>
+                  <DocumentDuplicateIcon className='h-4 w-4' /> copy
+                </>
+              )}
+            </span>
+          </button>
+        </main>
       ) : isListView ? (
         <>
           <TopNav title={title} />
@@ -171,6 +236,16 @@ function RouteComponent() {
           >
             <ArrowTopRightOnSquareIcon className='h-6 w-6' />
           </a>
+          <button
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
+            type='button'
+            onClick={() => {
+              setTab('share')
+            }}
+            disabled={tab === 'share'}
+          >
+            <ShareIcon className='h-6 w-6' />
+          </button>
           <button
             className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
             type='button'
@@ -248,6 +323,13 @@ function RouteComponent() {
                 },
               ]
             : []),
+          {
+            id: 'go-to-share',
+            title: 'go to share',
+            action: () => {
+              window.open(`${editNoteUrl(noteId)}?tab=share`, '_blank')
+            },
+          },
           {
             id: 'go-to-list',
             title: 'go to list',
