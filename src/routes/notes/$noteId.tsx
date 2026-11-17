@@ -67,7 +67,9 @@ function RouteComponent() {
       search: { tab: newTab === 'default' ? undefined : newTab },
     })
   }
+  const isDefaultView = tab === 'default'
   const isListView = tab === 'list'
+  const isShareView = tab === 'share'
   const [, copyToClipboard] = useCopyToClipboard()
   const [copied, setCopied] = useState<'text' | 'url' | null>(null)
   useEffect(() => {
@@ -128,7 +130,7 @@ function RouteComponent() {
       </Show>
       {note === undefined ? (
         <NoteSkeleton />
-      ) : tab === 'share' ? (
+      ) : isShareView ? (
         <main className='flex grow flex-col gap-2 p-2'>
           <button
             type='button'
@@ -242,7 +244,7 @@ function RouteComponent() {
             onClick={() => {
               setTab('share')
             }}
-            disabled={tab === 'share'}
+            disabled={isShareView}
           >
             <ShareIcon className='h-6 w-6' />
           </button>
@@ -262,7 +264,7 @@ function RouteComponent() {
             onClick={() => {
               setTab('default')
             }}
-            disabled={tab === 'default'}
+            disabled={isDefaultView}
           >
             <PencilSquareIcon className='h-6 w-6' />
           </button>
