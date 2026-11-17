@@ -325,27 +325,13 @@ function RouteComponent() {
                 },
               ]
             : []),
-          {
-            id: 'go-to-share',
-            title: 'go to share',
+          ...TABS.filter(tabOption => tabOption !== tab).map(tabOption => ({
+            id: `switch-tab-note-${tabOption}`,
+            title: `switch to ${tabOption === 'default' ? 'edit' : tabOption} tab`,
             action: () => {
-              window.open(`${editNoteUrl(noteId)}?tab=share`, '_blank')
+              setTab(tabOption)
             },
-          },
-          {
-            id: 'go-to-list',
-            title: 'go to list',
-            action: () => {
-              window.open(`${editNoteUrl(noteId)}?tab=list`, '_blank')
-            },
-          },
-          {
-            id: 'go-to-edit',
-            title: 'go to edit',
-            action: () => {
-              window.open(editNoteUrl(noteId), '_blank')
-            },
-          },
+          })),
         ]}
       />
     </>
