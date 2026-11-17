@@ -262,7 +262,7 @@ function RouteComponent() {
             onClick={() => {
               setTab('default')
             }}
-            disabled={!isListView}
+            disabled={tab === 'default'}
           >
             <PencilSquareIcon className='h-6 w-6' />
           </button>
