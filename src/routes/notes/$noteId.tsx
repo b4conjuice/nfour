@@ -20,6 +20,7 @@ import { useTRPC } from '@/integrations/trpc/react'
 import NavigateCommandPalette from '@/components/navigate-command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 import useTextarea from '@/lib/useTextarea'
+import useBeforeUnload from '@/lib/useBeforeUnload'
 import Textarea from '@/components/textarea'
 import { DEFAULT_TITLE } from '@/routes/__root'
 import { getNoteTitle } from '@/server/notes'
@@ -84,6 +85,7 @@ function RouteComponent() {
   const textarea = useTextarea({ initialText: note?.text ?? '' })
   const { text } = textarea
   const hasChanges = text !== (note?.text ?? '')
+  useBeforeUnload(hasChanges)
   const canSave = !(!hasChanges || text === '')
   const save = async () => {
     if (!note || !canSave || isSavingNote) return
