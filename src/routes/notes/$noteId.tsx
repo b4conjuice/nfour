@@ -13,6 +13,7 @@ import {
   ListBulletIcon,
   PencilSquareIcon,
   ShareIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/20/solid'
 import { useCopyToClipboard } from '@uidotdev/usehooks'
 import classNames from 'classnames'
@@ -20,7 +21,8 @@ import classNames from 'classnames'
 import TopNav from '@/components/top-nav'
 import Modal from '@/components/modal'
 import List from '@/components/list'
-import { useTRPC } from '@/integrations/trpc/react'
+import { EditTags } from '@/components/tags'
+import { useTRPC, useTRPCClient } from '@/integrations/trpc/react'
 import NavigateCommandPalette from '@/components/navigate-command-palette'
 import { editNoteUrl, markdownNoteUrl } from '@/lib/constants'
 import useTextarea from '@/lib/useTextarea'
@@ -29,7 +31,7 @@ import Textarea from '@/components/textarea'
 import { DEFAULT_TITLE } from '@/routes/__root'
 import { getNoteTitle } from '@/server/notes'
 
-const TABS = ['default', 'list', 'share'] as const
+const TABS = ['default', 'list', 'share', 'tools'] as const
 type Tab = (typeof TABS)[number]
 
 const isTab = (value: unknown): value is Tab => TABS.includes(value as Tab)
@@ -70,6 +72,7 @@ function RouteComponent() {
   const isDefaultView = tab === 'default'
   const isListView = tab === 'list'
   const isShareView = tab === 'share'
+  const isToolsView = tab === 'tools'
   const [, copyToClipboard] = useCopyToClipboard()
   const [copied, setCopied] = useState<'text' | 'url' | null>(null)
   useEffect(() => {
@@ -83,6 +86,7 @@ function RouteComponent() {
   }, [])
   const { noteId } = Route.useParams()
   const trpc = useTRPC()
+  const trpcClient = useTRPCClient()
   const { data: note } = useQuery(
     trpc.notes.getById.queryOptions({
       id: Number(noteId),
@@ -91,12 +95,21 @@ function RouteComponent() {
   const { mutateAsync: saveNote, isPending: isSavingNote } = useMutation(
     trpc.notes.saveNote.mutationOptions({
       onSuccess: async () => {
-        await queryClient.invalidateQueries(
-          trpc.notes.getById.queryFilter({ id: Number(noteId) })
-        )
+        await Promise.all([
+          queryClient.invalidateQueries(
+            trpc.notes.getById.queryFilter({ id: Number(noteId) })
+          ),
+          queryClient.invalidateQueries(trpc.notes.getAll.pathFilter()),
+        ])
       },
     })
   )
+  const { data: allNotes } = useQuery({
+    queryKey: [...trpc.notes.getAll.pathKey(), 'tags'],
+    queryFn: () => trpcClient.notes.getAll.query({}),
+    enabled: isToolsView,
+  })
+  const allTags = [...new Set((allNotes ?? []).flatMap(n => n.tags))]
   const hasMarkdown = !!note?.markdown
 
   const textarea = useTextarea({ initialText: note?.text ?? '' })
@@ -195,6 +208,25 @@ function RouteComponent() {
             />
           </main>
         </>
+      ) : isToolsView ? (
+        <>
+          <TopNav title={title} />
+          <main className='flex grow flex-col gap-2 p-2'>
+            <EditTags
+              note={note}
+              allTags={allTags}
+              onSave={async tags => {
+                await saveNote({
+                  id: note.id,
+                  noteOptions: {
+                    text: note.text,
+                    tags,
+                  },
+                })
+              }}
+            />
+          </main>
+        </>
       ) : (
         <Textarea {...textarea} hasChanges={hasChanges} />
       )}
@@ -257,6 +289,16 @@ function RouteComponent() {
             disabled={isListView}
           >
             <ListBulletIcon className='h-6 w-6' />
+          </button>
+          <button
+            className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
+            type='button'
+            onClick={() => {
+              setTab('tools')
+            }}
+            disabled={isToolsView}
+          >
+            <WrenchScrewdriverIcon className='h-6 w-6' />
           </button>
           <button
             className='text-cb-yellow hover:text-cb-yellow/75 disabled:text-cb-light-blue disabled:pointer-events-none'
